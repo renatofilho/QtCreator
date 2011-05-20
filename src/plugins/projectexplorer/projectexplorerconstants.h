@@ -104,6 +104,7 @@ const char * const C_COMPILE_OUTPUT     = "ProjectExplorer.CompileOutput";
 // languages
 const char * const LANG_CXX             = "CXX";
 const char * const LANG_QMLJS           = "QMLJS";
+const char * const LANG_PYTHON          = "PYTHON";
 
 // menus
 const char * const M_RECENTPROJECTS     = "ProjectExplorer.Menu.Recent";

@@ -510,7 +510,7 @@ void CodeFormatter::recalculateStateAfter(const QTextBlock &block)
 
 void CodeFormatter::indentFor(const QTextBlock &block, int *indent, int *padding)
 {
-//    qDebug() << "indenting for" << block.blockNumber() + 1;
+    qDebug() << "indenting for" << block.blockNumber() + 1;
 
     restoreCurrentState(block.previous());
     correctIndentation(block);

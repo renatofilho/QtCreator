@@ -290,3 +290,6 @@ plugin_macros.depends = plugin_texteditor
 plugin_macros.depends += plugin_find
 plugin_macros.depends += plugin_locator
 plugin_macros.depends += plugin_coreplugin
+
+SUBDIRS += plugin_pythoneditor
+plugin_pythoneditor.subdir = pythoneditor
