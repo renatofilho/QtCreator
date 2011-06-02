@@ -14,7 +14,8 @@ SUBDIRS   = \
     qmljs \
     glsl \
     qmleditorwidgets \
-    symbianutils
+    symbianutils \
+    python
 
 
 !win32 {

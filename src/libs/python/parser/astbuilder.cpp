@@ -25,23 +25,25 @@
 
 #include "ast.h"
 
-#include <kdebug.h>
+#include <QDebug>
+#include <QStack>
 #include <QProcess>
-#include <QDomDocument>
-#include "kurl.h"
-#include <klocale.h>
+//#include <QDomDocument>
+#include <QUrl>
+//#include <klocale.h>
 #include <qxmlstream.h>
 #include <QXmlStreamReader>
-#include <qdir.h>
-#include <language/duchain/topducontext.h>
-#include <language/interfaces/iproblem.h>
-#include <language/duchain/duchain.h>
+//#include <qdir.h>
+//#include <language/duchain/topducontext.h>
+//#include <language/interfaces/iproblem.h>
+//#include <language/duchain/duchain.h>
 
 // avoid compiler warnings... urgh
 #undef _POSIX_C_SOURCE
 #undef _XOPEN_SOURCE
 
-#include <language/duchain/duchainlock.h>
+//#include "parserConfig.h"
+//#include <language/duchain/duchainlock.h>
 
 #include "python-src/Include/pyport.h"
 #include "python-src/pyconfig.h"
@@ -60,9 +62,9 @@
 
 #include "python-src/Include/object.h"
 #include <Modules/cjkcodecs/multibytecodec.h>
-#include <KStandardDirs>
+//#include <KStandardDirs>
 
-using namespace KDevelop;
+//using namespace KDevelop;
 
 extern grammar _PyParser_Grammar;
 
@@ -271,7 +273,8 @@ v->function->belongsToCall = v;
                 break;
             }
         default:
-            kWarning() << "Unsupported statement AST type: " << node->kind;
+            qWarning() << "Unsupported statement AST type: " << node->kind;
+            Q_ASSERT(false);
         }
 
     if ( ! result ) return 0;
@@ -327,7 +330,7 @@ v->function->belongsToCall = v;
                 break;
             }
         default:
-            kWarning() << "Unsupported statement AST type: " << node->kind;
+            qWarning() << "Unsupported statement AST type: " << node->kind;
             Q_ASSERT(false);
         }
 
@@ -590,7 +593,7 @@ v->function->belongsToCall = v;
                 break;
             }
         default:
-            kWarning() << "Unsupported statement AST type: " << node->kind;
+            qWarning() << "Unsupported statement AST type: " << node->kind;
             Q_ASSERT(false);
         }
 
@@ -664,7 +667,7 @@ v->function->belongsToCall = v;
                 break;
             }
         default:
-            kWarning() << "Unsupported statement AST type: " << node->kind;
+            qWarning() << "Unsupported statement AST type: " << node->kind;
             Q_ASSERT(false);
         }
 
@@ -728,15 +731,16 @@ v->function->belongsToCall = v;
 
 
 QMutex AstBuilder::pyInitLock;
-QString AstBuilder::pyHomeDir = KStandardDirs::locate("data", "");
+/* TODO: find out a better way to check where apps store data */
+QString AstBuilder::pyHomeDir = "/usr/local/bin";
 
-CodeAst* AstBuilder::parse(KUrl filename, QString& contents)
+CodeAst* AstBuilder::parse(QUrl filename, QString& contents)
 {
     Py_NoSiteFlag = 1;
     
     AstBuilder::pyInitLock.lock();
     Py_SetPythonHome(AstBuilder::pyHomeDir.toAscii().data());
-    kDebug() << "Not initialized, calling init func.";
+    qDebug() << "Not initialized, calling init func.";
     Py_Initialize();
     
     PyArena* arena = PyArena_New();
@@ -746,16 +750,16 @@ CodeAst* AstBuilder::parse(KUrl filename, QString& contents)
     
     PyObject *exception, *value, *backtrace;
     PyErr_Fetch(&exception, &value, &backtrace);
-    kDebug() << "Errors before starting parser:";
+    qDebug() << "Errors before starting parser:";
     PyObject_Print(value, stderr, Py_PRINT_RAW);
-    kDebug();
+    qDebug();
     mod_ty syntaxtree = PyParser_ASTFromString(contents.toAscii(), "<kdev-editor-contents>", file_input, flags, arena);
 
     if ( ! syntaxtree ) {
-        kWarning() << "DID NOT RECEIVE A SYNTAX TREE -- probably parse error.";
+        qWarning() << "DID NOT RECEIVE A SYNTAX TREE -- probably parse error.";
         
         PyErr_Fetch(&exception, &value, &backtrace);
-        kDebug() << "Error objects: " << exception << value << backtrace;
+        qDebug() << "Error objects: " << exception << value << backtrace;
         PyObject_Print(value, stderr, Py_PRINT_RAW);
         
         PyObject* errorMessage_str = PyTuple_GetItem(value, 0);
@@ -764,7 +768,7 @@ CodeAst* AstBuilder::parse(KUrl filename, QString& contents)
         PyObject_Print(errorMessage_str, stderr, Py_PRINT_RAW);
        
         if ( ! errorDetails_tuple ) {
-            kWarning() << "Error retrieving error message, not displaying, and not doing anything";
+            qWarning() << "Error retrieving error message, not displaying, and not doing anything";
             pyInitLock.unlock();
             return 0;
         }
@@ -772,22 +776,22 @@ CodeAst* AstBuilder::parse(KUrl filename, QString& contents)
         errorMessage_str = PyTuple_GetItem(value, 0);
         errorDetails_tuple = PyTuple_GetItem(value, 1);
         PyObject_Print(errorMessage_str, stderr, Py_PRINT_RAW);
-        
+
         PyObject* colnoobj = PyTuple_GetItem(errorDetails_tuple, 2);
         int lineno = PyInt_AsLong(linenoobj) - 1;
         int colno = PyInt_AsLong(colnoobj);
-        
-        ProblemPointer p(new Problem());
-        SimpleCursor start(lineno, (colno-4 > 0 ? colno-4 : 0));
-        SimpleCursor end(lineno, (colno+4 > 4 ? colno+4 : 4));
-        SimpleRange range(start, end);
-        kDebug() << "Problem range: " << range;
-        DocumentRange location(IndexedString(filename.path()), range);
-        p->setFinalLocation(location);
-        p->setDescription(PyString_AsString(PyObject_Str(errorMessage_str)));
-        p->setSource(ProblemData::Parser);
-        m_problems.append(p);
-        
+
+        //ProblemPointer p(new Problem());
+        //SimpleCursor start(lineno, (colno-4 > 0 ? colno-4 : 0));
+        //SimpleCursor end(lineno, (colno+4 > 4 ? colno+4 : 4));
+        //SimpleRange range(start, end);
+        //qDebug() << "Problem range: " << range;
+        //DocumentRange location(IndexedString(filename.path()), range);
+        //p->setFinalLocation(location);
+        //p->setDescription(PyString_AsString(PyObject_Str(errorMessage_str)));
+        //p->setSource(ProblemData::Parser);
+        //m_problems.append(p);
+
         // try to recover.
         // Currently the following is tired:
         // * If the last non-space char before the error reported was ":", it's most likely an indent error.
@@ -840,9 +844,9 @@ CodeAst* AstBuilder::parse(KUrl filename, QString& contents)
                 // we can easily fix that by adding in a "pass" statement. However, we want to add that in the next line, if possible
                 // so context ranges for autocompletion stay intact.
                 if ( contents[emptySince] == QChar(':') ) {
-                    kDebug() << indents.length() << emptySinceLine + 1 << indents;
+                    qDebug() << indents.length() << emptySinceLine + 1 << indents;
                     if ( indents.length() > emptySinceLine + 1 && indents.at(emptySinceLine) < indents.at(emptySinceLine + 1) ) {
-                        kDebug() << indents.at(emptySinceLine) << indents.at(emptySinceLine + 1);
+                        qDebug() << indents.at(emptySinceLine) << indents.at(emptySinceLine + 1);
                         contents.insert(emptyLinesSince + 1 + indents.at(emptyLinesSinceLine), "\tpass#");
                     }
                     else {
@@ -850,19 +854,19 @@ CodeAst* AstBuilder::parse(KUrl filename, QString& contents)
                     }
                 }
                 else if ( indents.length() >= currentLine && currentLine > 0 ) {
-                    kDebug() << indents << currentLine;
+                    qDebug() << indents << currentLine;
                     contents[i+1+indents.at(currentLine - 1)] = QChar('#');
                     contents.insert(i+1+indents.at(currentLine - 1), "pass");
                 }
                 break;
             }
         }
-        
+
         syntaxtree = PyParser_ASTFromString(contents.toAscii(), "<kdev-editor-contents>", file_input, flags, arena);
         // 3rd try: discard everything after the last non-empty line, but only until the next block start
         if ( ! syntaxtree ) {
-            kWarning() << "Discarding parts of the code to be parsed because of previous errors";
-            kDebug() << indents;
+            qWarning() << "Discarding parts of the code to be parsed because of previous errors";
+            qDebug() << indents;
             int indentAtError = indents.at(errline);
             QChar c;
             bool atLineBeginning = true;
@@ -871,13 +875,13 @@ CodeAst* AstBuilder::parse(KUrl filename, QString& contents)
             int currentLineContentBeginning = currentLineBeginning;
             for ( int i = currentLineBeginning; i < len; i++ ) {
                 c = contents.at(i);
-                kDebug() << c;
+                qDebug() << c;
                 if ( c == '\n' ) {
                     if ( currentIndent <= indentAtError && currentIndent != -1 ) {
-                        kDebug() << "Start of error code: " << currentLineBeginning;
-                        kDebug() << "End of error block (current position): " << currentLineBeginning_end;
-                        kDebug() << "Length: " << currentLineBeginning_end - currentLineBeginning;
-                        kDebug() << "indent at error <> current indent:" << indentAtError << "<>" << currentIndent;
+                        qDebug() << "Start of error code: " << currentLineBeginning;
+                        qDebug() << "End of error block (current position): " << currentLineBeginning_end;
+                        qDebug() << "Length: " << currentLineBeginning_end - currentLineBeginning;
+                        qDebug() << "indent at error <> current indent:" << indentAtError << "<>" << currentIndent;
 //                         contents.remove(currentLineBeginning, currentLineBeginning_end-currentLineBeginning);
                         break;
                     }
@@ -895,7 +899,7 @@ CodeAst* AstBuilder::parse(KUrl filename, QString& contents)
                 }
                 if ( c.isSpace() && atLineBeginning ) currentIndent += 1;
             }
-            kDebug() << "This is what is left: " << contents;
+            qDebug() << "This is what is left: " << contents;
             syntaxtree = PyParser_ASTFromString(contents.toAscii(), "<kdev-editor-contents>", file_input, flags, arena);
         }
         if ( ! syntaxtree ) {
@@ -904,15 +908,16 @@ CodeAst* AstBuilder::parse(KUrl filename, QString& contents)
             return 0; // everything fails, so we abort.
         }
     }
-    kDebug() << "Got syntax tree from python parser:" << syntaxtree->kind << Module_kind;
+
+    qDebug() << "Got syntax tree from python parser:" << syntaxtree->kind << Module_kind;
 
     PythonAstTransformer* t = new PythonAstTransformer();
-    t->run(syntaxtree, filename.fileName().replace(".py", ""));
-    kDebug() << t->ast;
-    
+    t->run(syntaxtree, filename.path().replace(".py", ""));
+    qDebug() << t->ast;
+
     PyArena_Free(arena);
     Py_Finalize();
-    
+
     AstBuilder::pyInitLock.unlock();
 
     return t->ast;

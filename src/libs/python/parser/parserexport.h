@@ -23,16 +23,10 @@
 #ifndef PARSEREXPORT_H
 #define PARSEREXPORT_H
 
-/* needed for KDE_EXPORT macros */
-#include <kdemacros.h>
-
-
-#ifndef KDEVPYTHONPARSER_EXPORT
-# ifdef MAKE_KDEV4PYTHONPARSER_LIB
-#  define KDEVPYTHONPARSER_EXPORT KDE_EXPORT
-# else
-#  define KDEVPYTHONPARSER_EXPORT KDE_IMPORT
-# endif
+#ifndef PYTHON_EXPORT
+#define PYTHON_EXPORT Q_DECL_EXPORT
+#else
+#define PYTHON_EXPORT Q_DECL_IMPORT
 #endif
 
 #endif

@@ -128,3 +128,6 @@ tests/valgrind/memcheck/testapps/uninit3/uninit3
 tests/valgrind/memcheck/testrunner
 tests/valgrind/callgrind/callgrindparsertests
 tests/valgrind/callgrind/modeltest
+
+# Python's source code
+src/libs/python/python-src/*

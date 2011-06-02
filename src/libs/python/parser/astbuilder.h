@@ -23,11 +23,12 @@
 #define ASTBUILDER_H
 
 #include "ast.h"
-#include <kurl.h>
-#include <QDomDocument>
-#include "kdebug.h"
+#include <QUrl>
+//#include <QDomDocument>
+//#include "kdebug.h"
 #include "QXmlStreamReader"
-#include <language/duchain/topducontext.h>
+#include <QMutex>
+//#include <language/duchain/topducontext.h>
 #include "parserexport.h"
 
 namespace PythonParser
@@ -38,17 +39,19 @@ namespace PythonParser
 
 namespace Python
 {
+    class Parser;
+    class AstNode;
     class Ast;
     class CodeAst;
 
 typedef QMap<QString, QString> stringDictionary;
 
-class KDEVPYTHONPARSER_EXPORT AstBuilder
+class PYTHON_EXPORT AstBuilder
 {
     
 public:
-    CodeAst* parse(KUrl filename, QString& contents);
-    QList<KDevelop::ProblemPointer> m_problems;
+    CodeAst* parse(QUrl filename, QString& contents);
+    //QList<KDevelop::ProblemPointer> m_problems;
 private:
     static QMutex pyInitLock;
     static QString pyHomeDir;

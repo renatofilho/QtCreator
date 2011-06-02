@@ -25,14 +25,13 @@
 #include <QtCore/QDebug>
 #include <QtCore/QTextStream>
 #include <QtCore/QTextCodec>
+#include <QUrl>
+#include <QDebug>
 
 #include "astbuilder.h"
 
-#include <language/duchain/duchain.h>
-#include <language/duchain/topducontext.h>
-
-
-using namespace KDevelop;
+//#include <language/duchain/duchain.h>
+//#include <language/duchain/topducontext.h>
 
 namespace Python
 {
@@ -47,7 +46,7 @@ bool Driver::readFile( const QString& filename, const char* codec )
     QFile f(filename);
     if( !f.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-        kDebug() << "Couldn't open project file:" << filename;
+        qDebug() << "Couldn't open project file:" << filename;
         return false;
     }
     QTextStream s(&f);
@@ -65,7 +64,7 @@ void Driver::setDebug( bool debug )
     m_debug = debug;
 }
 
-void Driver::setCurrentDocument(KUrl url)
+void Driver::setCurrentDocument(QUrl url)
 {
     m_currentDocument = url;
 }
@@ -77,26 +76,26 @@ QPair<CodeAst*, bool> Driver::parse( Python::CodeAst* /* ast */)
     matched.first = pythonparser.parse(m_currentDocument, m_content);
     matched.second = matched.first ? true : false; // check wether an AST was returned and react accordingly
     
-    m_problems = pythonparser.m_problems;
+    //m_problems = pythonparser.m_problems;
     
     if( matched.second )
     {
-        kDebug() << "Sucessfully parsed";
+        qDebug() << "Sucessfully parsed";
     }else
     {
         matched.first = 0;
-        kDebug() << "Couldn't parse content";
+        qDebug() << "Couldn't parse content";
     }
     return matched;
 }
 
 
-void Driver::setTokenStream( KDevPG::TokenStream* ts )
+void Driver::setTokenStream( Python::TokenStream* ts )
 {
     m_tokenstream = ts;
 }
 
-void Driver::setMemoryPool( KDevPG::MemoryPool* pool )
+void Driver::setMemoryPool( Python::MemoryPool* pool )
 {
     m_pool = pool;
 }

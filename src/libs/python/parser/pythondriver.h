@@ -23,27 +23,24 @@
 
 #include <QtCore/QString>
 #include "parserexport.h"
-#include <kurl.h>
+#include <QUrl>
 
-#include <language/interfaces/iproblem.h>
+#include "memorypool.h"
+#include "tokenstream.h"
 
+//#include <language/interfaces/iproblem.h>
 
-namespace KDevPG
-{
+namespace Python {
+
 class MemoryPool;
 class TokenStream;
-}
-namespace Python
-{
-class CodeAst;
-}
 
-namespace Python
-{
+class CodeAst;
+
 /**
  * Class to parse a Python source file or a string containing python source code
  */
-class KDEVPYTHONPARSER_EXPORT Driver
+class PYTHON_EXPORT Driver
 {
 public:
     Driver();
@@ -51,18 +48,18 @@ public:
     void setContent( const QString& );
     void setDebug( bool );
     QPair<CodeAst*, bool> parse( Python::CodeAst* ast );
-    void setTokenStream( KDevPG::TokenStream* );
-    void setMemoryPool( KDevPG::MemoryPool* );
-    void setCurrentDocument(KUrl url);
+    void setTokenStream( Python::TokenStream* );
+    void setMemoryPool( Python::MemoryPool* );
+    void setCurrentDocument(QUrl url);
     
-    QList<KDevelop::ProblemPointer> m_problems;
+    //QList<KDevelop::ProblemPointer> m_problems;
     
 private:
     QString m_content;
     bool m_debug;
-    KDevPG::MemoryPool* m_pool;
-    KDevPG::TokenStream* m_tokenstream;
-    KUrl m_currentDocument;
+    MemoryPool* m_pool;
+    TokenStream* m_tokenstream;
+    QUrl m_currentDocument;
 };
 
 }

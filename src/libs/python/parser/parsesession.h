@@ -25,26 +25,26 @@
 #define PYTHON_PARSESESSION_H
 #include <QtCore/QString>
 #include "parserexport.h"
-#include <language/duchain/indexedstring.h>
-#include <language/duchain/duchainpointer.h>
-#include <language/editor/simplecursor.h>
-#include <language/editor/documentrange.h>
+//#include <language/duchain/indexedstring.h>
+//#include <language/duchain/duchainpointer.h>
+//#include <language/editor/simplecursor.h>
+//#include <language/editor/documentrange.h>
 #include "ast.h"
-#include "kurl.h"
+#include <QUrl>
+#include <QString> 
+//#include <language/interfaces/iproblem.h>
+//#include <language/editor/rangeinrevision.h>
 
-#include <language/interfaces/iproblem.h>
-#include <language/editor/rangeinrevision.h>
+//using namespace KDevelop;
 
-using namespace KDevelop;
-
-typedef QPair<KDevelop::DUContextPointer, KDevelop::RangeInRevision> SimpleUse;
+//typedef QPair<KDevelop::DUContextPointer, KDevelop::RangeInRevision> SimpleUse;
 
 namespace Python
 {
     class CodeAst;
     class Ast;
 
-class KDEVPYTHONPARSER_EXPORT ParseSession
+class PYTHON_EXPORT ParseSession
 {
 public:
     ParseSession();
@@ -53,22 +53,24 @@ public:
     void setContents( const QString& contents );
     QString contents() const;
     
-    void setCurrentDocument(KUrl& filename);
-    IndexedString currentDocument();
+    void setCurrentDocument(QUrl& filename);
+    QString currentDocument();
 
     QPair<CodeAst*, bool> parse( Python::CodeAst* ast );
     
-    QList<KDevelop::ProblemPointer> m_problems;
-    
+    //QList<KDevelop::ProblemPointer> m_problems;
+   
+    /* 
     void mapAstUse(Ast* node, const SimpleUse& use)
     {
         Q_UNUSED(node);
         Q_UNUSED(use);
     }
+    */
     
 private:
     QString m_contents;
-    KDevelop::IndexedString m_currentDocument;
+    QString m_currentDocument;
 
 };
 

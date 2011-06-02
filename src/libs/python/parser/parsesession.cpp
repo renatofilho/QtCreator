@@ -23,13 +23,14 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.           *
  *****************************************************************************/
 #include "parsesession.h"
-#include <kdebug.h>
+//#include <kdebug.h>
 
 #include "pythondriver.h"
-#include <language/duchain/indexedstring.h>
+//#include <language/duchain/indexedstring.h>
+#include <QString>
 #include "astbuilder.h"
 
-using namespace KDevelop;
+//using namespace KDevelop;
 
 namespace Python
 {
@@ -41,12 +42,12 @@ ParseSession::~ParseSession()
 {
 }
 
-void ParseSession::setCurrentDocument(KUrl& filename)
+void ParseSession::setCurrentDocument(QUrl& filename)
 {
-    m_currentDocument = KDevelop::IndexedString(filename);
+    m_currentDocument = QString(filename.path());
 }
 
-IndexedString ParseSession::currentDocument()
+QString ParseSession::currentDocument()
 {
     return m_currentDocument;
 }
@@ -65,10 +66,10 @@ void ParseSession::setContents( const QString& contents )
 QPair<CodeAst*, bool> ParseSession::parse( Python::CodeAst* ast )
 {
     Driver driver;
-    driver.setCurrentDocument(m_currentDocument.toUrl());
+    driver.setCurrentDocument(QUrl(m_currentDocument));
     driver.setContent(m_contents);
     QPair<CodeAst*, bool> result = driver.parse(ast);
-    m_problems = driver.m_problems;
+    //m_problems = driver.m_problems;
     return result;
 }
 

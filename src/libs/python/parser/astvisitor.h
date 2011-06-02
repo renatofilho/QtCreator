@@ -32,7 +32,7 @@
 namespace Python
 {
 
-class KDEVPYTHONPARSER_EXPORT AstVisitor
+class PYTHON_EXPORT AstVisitor
 {
 public:
     AstVisitor();

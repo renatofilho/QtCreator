@@ -31,10 +31,12 @@
 
 #include "parserexport.h"
 
+/*
 namespace KDevelop
 {
     class DUContext;
 }
+*/
 
 namespace Python {
     class StatementAst;
@@ -57,14 +59,9 @@ namespace Python {
     class ComprehensionAst;
     class SliceAstBase;
     class SliceAst;
-}
-
-namespace Python
-{
-
 
 // Base class for all other Abstract Syntax Tree classes
-class KDEVPYTHONPARSER_EXPORT Ast
+class PYTHON_EXPORT Ast
 {
 public:
     enum AstType
@@ -187,17 +184,17 @@ public:
     
     bool hasUsefulRangeInformation;
     
-    KDevelop::DUContext* context;
+    //KDevelop::DUContext* context;
 };
 
-class KDEVPYTHONPARSER_EXPORT Identifier : public Ast {
+class PYTHON_EXPORT Identifier : public Ast {
 public:
     Identifier(QString value);
     QString value;
 };
 
 // this replaces ModuleAst
-class KDEVPYTHONPARSER_EXPORT CodeAst : public Ast {
+class PYTHON_EXPORT CodeAst : public Ast {
 public:
     CodeAst();
     QList<Ast*> body;
@@ -205,12 +202,12 @@ public:
 };
 
 /** Statement classes **/
-class KDEVPYTHONPARSER_EXPORT StatementAst : public Ast {
+class PYTHON_EXPORT StatementAst : public Ast {
 public:
     StatementAst(Ast* parent, AstType type);
 };
 
-class KDEVPYTHONPARSER_EXPORT FunctionDefinitionAst : public StatementAst {
+class PYTHON_EXPORT FunctionDefinitionAst : public StatementAst {
 public:
     FunctionDefinitionAst(Ast* parent);
     Identifier* name;
@@ -219,7 +216,7 @@ public:
     QList<Ast*> body;
 };
 
-class KDEVPYTHONPARSER_EXPORT ClassDefinitionAst : public StatementAst {
+class PYTHON_EXPORT ClassDefinitionAst : public StatementAst {
 public:
     ClassDefinitionAst(Ast* parent);
     Identifier* name;
@@ -228,26 +225,26 @@ public:
     QList<ExpressionAst*> decorators;
 };
 
-class KDEVPYTHONPARSER_EXPORT ReturnAst : public StatementAst {
+class PYTHON_EXPORT ReturnAst : public StatementAst {
 public:
     ReturnAst(Ast* parent);
     ExpressionAst* value;
 };
 
-class KDEVPYTHONPARSER_EXPORT DeleteAst : public StatementAst {
+class PYTHON_EXPORT DeleteAst : public StatementAst {
 public:
     DeleteAst(Ast* parent);
     QList<ExpressionAst*> targets;
 };
 
-class KDEVPYTHONPARSER_EXPORT AssignmentAst : public StatementAst {
+class PYTHON_EXPORT AssignmentAst : public StatementAst {
 public:
     AssignmentAst(Ast* parent);
     QList<ExpressionAst*> targets;
     ExpressionAst* value;
 };
 
-class KDEVPYTHONPARSER_EXPORT AugmentedAssignmentAst : public StatementAst {
+class PYTHON_EXPORT AugmentedAssignmentAst : public StatementAst {
 public:
     AugmentedAssignmentAst(Ast* parent);
     ExpressionAst* target;
@@ -255,7 +252,7 @@ public:
     ExpressionAst* value;
 };
 
-class KDEVPYTHONPARSER_EXPORT ForAst : public StatementAst {
+class PYTHON_EXPORT ForAst : public StatementAst {
 public:
     ForAst(Ast* parent);
     ExpressionAst* target;
@@ -264,7 +261,7 @@ public:
     QList<Ast*> orelse;
 };
 
-class KDEVPYTHONPARSER_EXPORT WhileAst : public StatementAst {
+class PYTHON_EXPORT WhileAst : public StatementAst {
 public:
     WhileAst(Ast* parent);
     ExpressionAst* condition;
@@ -272,7 +269,7 @@ public:
     QList<Ast*> orelse;
 };
 
-class KDEVPYTHONPARSER_EXPORT IfAst : public StatementAst {
+class PYTHON_EXPORT IfAst : public StatementAst {
 public:
     IfAst(Ast* parent);
     ExpressionAst* condition;
@@ -280,7 +277,7 @@ public:
     QList<Ast*> orelse;
 };
 
-class KDEVPYTHONPARSER_EXPORT WithAst : public StatementAst {
+class PYTHON_EXPORT WithAst : public StatementAst {
 public:
     WithAst(Ast* parent);
     ExpressionAst* contextExpression;
@@ -288,14 +285,14 @@ public:
     QList<Ast*> body;
 };
 
-class KDEVPYTHONPARSER_EXPORT RaiseAst : public StatementAst {
+class PYTHON_EXPORT RaiseAst : public StatementAst {
 public:
     RaiseAst(Ast* parent);
     ExpressionAst* type;
     // TODO check what the other things in the grammar actually are and add them
 };
 
-class KDEVPYTHONPARSER_EXPORT TryExceptAst : public StatementAst {
+class PYTHON_EXPORT TryExceptAst : public StatementAst {
 public:
     TryExceptAst(Ast* parent);
     QList<Ast*> body;
@@ -303,27 +300,27 @@ public:
     QList<Ast*> orelse;
 };
 
-class KDEVPYTHONPARSER_EXPORT TryFinallyAst : public StatementAst {
+class PYTHON_EXPORT TryFinallyAst : public StatementAst {
 public:
     TryFinallyAst(Ast* parent);
     QList<Ast*> body;
     QList<Ast*> finalbody;
 };
 
-class KDEVPYTHONPARSER_EXPORT AssertionAst : public StatementAst {
+class PYTHON_EXPORT AssertionAst : public StatementAst {
 public:
     AssertionAst(Ast* parent);
     ExpressionAst* condition;
     ExpressionAst* message;
 };
 
-class KDEVPYTHONPARSER_EXPORT ImportAst : public StatementAst {
+class PYTHON_EXPORT ImportAst : public StatementAst {
 public:
     ImportAst(Ast* parent);
     QList<AliasAst*> names;
 };
 
-class KDEVPYTHONPARSER_EXPORT ImportFromAst : public StatementAst {
+class PYTHON_EXPORT ImportFromAst : public StatementAst {
 public:
     ImportFromAst(Ast* parent);
     Identifier* module;
@@ -331,7 +328,7 @@ public:
     int level;
 };
 
-class KDEVPYTHONPARSER_EXPORT ExecAst : public StatementAst {
+class PYTHON_EXPORT ExecAst : public StatementAst {
 public:
     ExecAst(Ast* parent);
     ExpressionAst* body;
@@ -339,7 +336,7 @@ public:
     ExpressionAst* locals;
 };
 
-class KDEVPYTHONPARSER_EXPORT GlobalAst : public StatementAst {
+class PYTHON_EXPORT GlobalAst : public StatementAst {
 public:
     GlobalAst(Ast* parent);
     QList<Identifier*> names;
@@ -347,17 +344,17 @@ public:
 
 // TODO what's stmt::Expr(expr value) in the grammar and what do we need it for?
 
-class KDEVPYTHONPARSER_EXPORT BreakAst : public StatementAst {
+class PYTHON_EXPORT BreakAst : public StatementAst {
 public:
     BreakAst(Ast* parent);
 };
 
-class KDEVPYTHONPARSER_EXPORT ContinueAst : public StatementAst {
+class PYTHON_EXPORT ContinueAst : public StatementAst {
 public:
     ContinueAst(Ast* parent);
 };
 
-class KDEVPYTHONPARSER_EXPORT PrintAst : public StatementAst {
+class PYTHON_EXPORT PrintAst : public StatementAst {
 public:
     PrintAst(Ast* parent);
     ExpressionAst* destination;
@@ -365,14 +362,14 @@ public:
     bool newline;
 };
 
-class KDEVPYTHONPARSER_EXPORT PassAst : public StatementAst {
+class PYTHON_EXPORT PassAst : public StatementAst {
 public:
     PassAst(Ast* parent);
 };
 
 
 /** Expression classes **/
-class KDEVPYTHONPARSER_EXPORT ExpressionAst : public Ast {
+class PYTHON_EXPORT ExpressionAst : public Ast {
 public:
     ExpressionAst(Ast* parent, AstType type = Ast::ExpressionAstType);
     enum Context {
@@ -387,14 +384,14 @@ public:
     CallAst* belongsToCall;
 };
 
-class KDEVPYTHONPARSER_EXPORT BooleanOperationAst : public ExpressionAst {
+class PYTHON_EXPORT BooleanOperationAst : public ExpressionAst {
 public:
     BooleanOperationAst(Ast* parent);
     Ast::BooleanOperationTypes type;
     QList<ExpressionAst*> values;
 };
 
-class KDEVPYTHONPARSER_EXPORT BinaryOperationAst : public ExpressionAst {
+class PYTHON_EXPORT BinaryOperationAst : public ExpressionAst {
 public:
     BinaryOperationAst(Ast* parent);
     Ast::OperatorTypes type;
@@ -402,21 +399,21 @@ public:
     ExpressionAst* rhs;
 };
 
-class KDEVPYTHONPARSER_EXPORT UnaryOperationAst : public ExpressionAst {
+class PYTHON_EXPORT UnaryOperationAst : public ExpressionAst {
 public:
     UnaryOperationAst(Ast* parent);
     Ast::UnaryOperatorTypes type;
     ExpressionAst* operand;
 };
 
-class KDEVPYTHONPARSER_EXPORT LambdaAst : public ExpressionAst {
+class PYTHON_EXPORT LambdaAst : public ExpressionAst {
 public:
     LambdaAst(Ast* parent);
     ArgumentsAst* arguments;
     ExpressionAst* body;
 };
 
-class KDEVPYTHONPARSER_EXPORT IfExpressionAst : public ExpressionAst {
+class PYTHON_EXPORT IfExpressionAst : public ExpressionAst {
 public:
     IfExpressionAst(Ast* parent);
     ExpressionAst* condition;
@@ -424,34 +421,34 @@ public:
     ExpressionAst* orelse;
 };
 
-class KDEVPYTHONPARSER_EXPORT DictAst : public ExpressionAst {
+class PYTHON_EXPORT DictAst : public ExpressionAst {
 public:
     DictAst(Ast* parent);
     QList<ExpressionAst*> keys;
     QList<ExpressionAst*> values;
 };
 
-class KDEVPYTHONPARSER_EXPORT SetAst : public ExpressionAst {
+class PYTHON_EXPORT SetAst : public ExpressionAst {
 public:
     SetAst(Ast* parent);
     QList<ExpressionAst*> elements;
 };
 
-class KDEVPYTHONPARSER_EXPORT ListComprehensionAst : public ExpressionAst {
+class PYTHON_EXPORT ListComprehensionAst : public ExpressionAst {
 public:
     ListComprehensionAst(Ast* parent);
     ExpressionAst* element;
     QList<ComprehensionAst*> generators;
 };
 
-class KDEVPYTHONPARSER_EXPORT SetComprehensionAst : public ExpressionAst {
+class PYTHON_EXPORT SetComprehensionAst : public ExpressionAst {
 public:
     SetComprehensionAst(Ast* parent);
     ExpressionAst* element;
     QList<ComprehensionAst*> generators;
 };
 
-class KDEVPYTHONPARSER_EXPORT DictionaryComprehensionAst : public ExpressionAst {
+class PYTHON_EXPORT DictionaryComprehensionAst : public ExpressionAst {
 public:
     DictionaryComprehensionAst(Ast* parent);
     ExpressionAst* key;
@@ -459,14 +456,14 @@ public:
     QList<ComprehensionAst*> generators;
 };
 
-class KDEVPYTHONPARSER_EXPORT GeneratorExpressionAst : public ExpressionAst {
+class PYTHON_EXPORT GeneratorExpressionAst : public ExpressionAst {
 public:
     GeneratorExpressionAst(Ast* parent);
     ExpressionAst* element;
     QList<ComprehensionAst*> generators;
 };
 
-class KDEVPYTHONPARSER_EXPORT CompareAst : public ExpressionAst {
+class PYTHON_EXPORT CompareAst : public ExpressionAst {
 public:
     CompareAst(Ast* parent);
     ExpressionAst* leftmostElement;
@@ -475,38 +472,38 @@ public:
 };
 
 // TODO whats this exactly?
-class KDEVPYTHONPARSER_EXPORT ReprAst : public ExpressionAst {
+class PYTHON_EXPORT ReprAst : public ExpressionAst {
 public:
     ReprAst(Ast* parent);
     ExpressionAst* value;
 };
 
-class KDEVPYTHONPARSER_EXPORT NumberAst : public ExpressionAst {
+class PYTHON_EXPORT NumberAst : public ExpressionAst {
 public:
     NumberAst(Ast* parent);
     QString value; // everything else would be even more strange
 };
 
-class KDEVPYTHONPARSER_EXPORT StringAst : public ExpressionAst {
+class PYTHON_EXPORT StringAst : public ExpressionAst {
 public:
     StringAst(Ast* parent);
     QString value;
 };
 
-class KDEVPYTHONPARSER_EXPORT YieldAst : public ExpressionAst {
+class PYTHON_EXPORT YieldAst : public ExpressionAst {
 public:
     YieldAst(Ast* parent);
     ExpressionAst* value;
 };
 
-class KDEVPYTHONPARSER_EXPORT NameAst : public ExpressionAst {
+class PYTHON_EXPORT NameAst : public ExpressionAst {
 public:
     NameAst(Ast* parent);
     Identifier* identifier;
     ExpressionAst::Context context;
 };
 
-class KDEVPYTHONPARSER_EXPORT CallAst : public ExpressionAst {
+class PYTHON_EXPORT CallAst : public ExpressionAst {
 public:
     CallAst(Ast* parent);
     ExpressionAst* function;
@@ -516,7 +513,7 @@ public:
     ExpressionAst* starArguments;
 };
 
-class KDEVPYTHONPARSER_EXPORT AttributeAst : public ExpressionAst {
+class PYTHON_EXPORT AttributeAst : public ExpressionAst {
 public:
     AttributeAst(Ast* parent);
     ExpressionAst* value;
@@ -525,7 +522,7 @@ public:
     int depth; // foo.bar.baz -> foo has depth 1, bar has depth 2, baz 3; needed for range analysis
 };
 
-class KDEVPYTHONPARSER_EXPORT SubscriptAst : public ExpressionAst {
+class PYTHON_EXPORT SubscriptAst : public ExpressionAst {
 public:
     SubscriptAst(Ast* parent);
     ExpressionAst* value;
@@ -533,14 +530,14 @@ public:
     ExpressionAst::Context context;
 };
 
-class KDEVPYTHONPARSER_EXPORT ListAst : public ExpressionAst {
+class PYTHON_EXPORT ListAst : public ExpressionAst {
 public:
     ListAst(Ast* parent);
     QList<ExpressionAst*> elements;
     ExpressionAst::Context context;
 };
 
-class KDEVPYTHONPARSER_EXPORT TupleAst : public ExpressionAst {
+class PYTHON_EXPORT TupleAst : public ExpressionAst {
 public:
     TupleAst(Ast* parent);
     QList<ExpressionAst*> elements;
@@ -548,17 +545,17 @@ public:
 };
 
 /** Slice classes **/
-class KDEVPYTHONPARSER_EXPORT SliceAstBase : public Ast {
+class PYTHON_EXPORT SliceAstBase : public Ast {
 public:
     SliceAstBase(Ast* parent, AstType type);
 };
 
-class KDEVPYTHONPARSER_EXPORT EllipsisAst : public SliceAstBase {
+class PYTHON_EXPORT EllipsisAst : public SliceAstBase {
 public:
     EllipsisAst(Ast* parent);
 };
 
-class KDEVPYTHONPARSER_EXPORT SliceAst : public SliceAstBase {
+class PYTHON_EXPORT SliceAst : public SliceAstBase {
 public:
     SliceAst(Ast* parent);
     ExpressionAst* lower;
@@ -566,20 +563,20 @@ public:
     ExpressionAst* step;
 };
 
-class KDEVPYTHONPARSER_EXPORT ExtendedSliceAst : public SliceAstBase {
+class PYTHON_EXPORT ExtendedSliceAst : public SliceAstBase {
 public:
     ExtendedSliceAst(Ast* parent);
     QList<SliceAst*> dims;
 };
 
-class KDEVPYTHONPARSER_EXPORT IndexAst : public SliceAstBase {
+class PYTHON_EXPORT IndexAst : public SliceAstBase {
 public:
     IndexAst(Ast* parent);
     ExpressionAst* value;
 };
 
 /** Independent classes **/
-class KDEVPYTHONPARSER_EXPORT ArgumentsAst : public Ast {
+class PYTHON_EXPORT ArgumentsAst : public Ast {
 public:
     ArgumentsAst(Ast* parent);
     QList<ExpressionAst*> arguments;
@@ -590,14 +587,14 @@ public:
     int vararg_lineno, vararg_col_offset;
 };
 
-class KDEVPYTHONPARSER_EXPORT KeywordAst : public Ast {
+class PYTHON_EXPORT KeywordAst : public Ast {
 public:
     KeywordAst(Ast* parent);
     Identifier* argumentName;
     ExpressionAst* value;
 };
 
-class KDEVPYTHONPARSER_EXPORT ComprehensionAst : public Ast {
+class PYTHON_EXPORT ComprehensionAst : public Ast {
 public:
     ComprehensionAst(Ast* parent);
     ExpressionAst* target;
@@ -605,7 +602,7 @@ public:
     QList<ExpressionAst*> conditions;
 };
 
-class KDEVPYTHONPARSER_EXPORT ExceptionHandlerAst : public Ast {
+class PYTHON_EXPORT ExceptionHandlerAst : public Ast {
 public:
     ExceptionHandlerAst(Ast* parent);
     ExpressionAst* type;
@@ -613,7 +610,7 @@ public:
     QList<Ast*> body;
 };
 
-class KDEVPYTHONPARSER_EXPORT AliasAst : public Ast {
+class PYTHON_EXPORT AliasAst : public Ast {
 public:
     AliasAst(Ast* parent);
     Identifier* name;
