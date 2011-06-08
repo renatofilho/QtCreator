@@ -10,6 +10,10 @@ DESTDIR = $$IDE_PLUGIN_PATH/Nokia
 PROVIDER = INdT
 include(../../plugins/coreplugin/coreplugin.pri)
 
+INCLUDEPATH += \
+    $$PWD/../texteditor \
+    $$PWD/../texteditor/generichighlighter
+
 HEADERS += pythoneditor.h \
         pythoneditoreditable.h \
         pythoneditorconstants.h \

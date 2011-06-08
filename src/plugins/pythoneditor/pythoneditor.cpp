@@ -14,6 +14,9 @@
 #include <coreplugin/editormanager/editormanager.h>
 #include <coreplugin/icore.h>
 #include <coreplugin/mimedatabase.h>
+#include <coreplugin/coreconstants.h>
+#include <coreplugin/icore.h>
+#include <coreplugin/mimedatabase.h>
 #include <extensionsystem/pluginmanager.h>
 #include <texteditor/basetextdocument.h>
 #include <texteditor/fontsettings.h>
@@ -21,7 +24,18 @@
 #include <texteditor/texteditorconstants.h>
 #include <texteditor/texteditorsettings.h>
 #include <texteditor/syntaxhighlighter.h>
+#include <texteditor/generichighlighter/manager.h>
+#include <texteditor/generichighlighter/highlighter.h>
+#include <texteditor/generichighlighter/highlightdefinition.h>
+#include <texteditor/generichighlighter/highlightersettings.h>
+#include <texteditor/generichighlighter/highlighterexception.h>
+#include <texteditor/generichighlighter/context.h>
+#include <texteditor/generichighlighter/highlightdefinitionhandler.h>
+#include <texteditor/syntaxhighlighter.h>
+#include <texteditor/plaintexteditor.h>
 #include <texteditor/refactoroverlay.h>
+#include <texteditor/normalindenter.h>
+#include <texteditor/generichighlighter/highlightersettingspage.h>
 #include <texteditor/tooltip/tooltip.h>
 #include <qmldesigner/qmldesignerconstants.h>
 #include <utils/changeset.h>
@@ -39,6 +53,8 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QToolBar>
 #include <QtGui/QTreeView>
+#include <QtCore/QSharedPointer>
+#include <QtCore/QFileInfo>
 
 #include "pythoneditor.h"
 #include "pythoneditoreditable.h"
@@ -52,23 +68,32 @@ enum {
 using namespace PythonEditor;
 using namespace PythonEditor::Internal;
 
-PyTextEditorWidget::PyTextEditorWidget(QWidget *parent) :
-    TextEditor::BaseTextEditorWidget(parent),
+//using namespace TextEditor;
+
+PyTextEditorWidget::PyTextEditorWidget(QWidget *parent) 
+    : TextEditor::PlainTextEditorWidget(parent),
     m_outlineCombo(0)
 {
+    /*
     qDebug() << "PyTextEditorWidget::PyTextEditorWidget";
     setParenthesesMatchingEnabled(true);
-    setMarksVisible(true);
     setCodeFoldingSupported(true);
+    setRevisionsVisible(true);
+    setMarksVisible(true);
+    setRequestMarkEnabled(false);
+    setLineSeparatorsAllowed(true);
+    setIndenter(new TextEditor::NormalIndenter); // Currently only "normal" indentation is supported.
 
+    //setMimeType(QLatin1String(TextEditor::Constants::C_TEXTEDITOR_MIMETYPE_TEXT));
+    //setDisplayName(tr(Core::Constants::K_DEFAULT_TEXT_EDITOR_DISPLAY_NAME));
+    */
     m_updateDocumentTimer = new QTimer(this);
     m_updateDocumentTimer->setInterval(UPDATE_DOCUMENT_DEFAULT_INTERVAL);
     m_updateDocumentTimer->setSingleShot(true);
     connect(m_updateDocumentTimer, SIGNAL(timeout()), this, SLOT(updateDocumentNow()));
-
     connect(this, SIGNAL(textChanged()), this, SLOT(updateDocument()));
-
-    //baseTextDocument()->setSyntaxHighlighter(new Highlighter(this, document()));
+    //connect(file(), SIGNAL(changed()), this, SLOT(configure()));
+    //connect(Manager::instance(), SIGNAL(mimeTypesRegistered()), this, SLOT(configure()));
 
 //    if (m_modelManager) {
 //        m_semanticHighlighter->setModelManager(m_modelManager);
@@ -180,16 +205,6 @@ void PyTextEditorWidget::createToolBar(PyEditorEditable *editor)
 
     editor->insertExtraToolBarWidget(TextEditor::BaseTextEditor::Left,
                                         m_outlineCombo);
-}
-
-bool PyTextEditorWidget::event(QEvent *e)
-{
-    return BaseTextEditorWidget::event(e);
-}
-
-void PyTextEditorWidget::unCommentSelection(void)
-{
-    Utils::unCommentSelection(this);
 }
 
 //void PyTextEditorWidget::updateDocumentNow(void)

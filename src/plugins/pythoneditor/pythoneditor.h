@@ -10,11 +10,14 @@
 #ifndef _PYTHONEDITOR_H_
 #define _PYTHONEDITOR_H_
 
-#include <texteditor/basetexteditor.h>
+#include <texteditor/plaintexteditor.h>
 #include <texteditor/quickfix.h>
+#include <utils/uncommentselection.h>
 
 #include <QtCore/QSharedPointer>
 #include <QtCore/QSet>
+#include <QtCore/QList>
+#include <QtCore/QScopedPointer>
 
 #include "pythoneditoreditable.h"
 
@@ -25,19 +28,18 @@ QT_END_NAMESPACE
 
 namespace Core {
 class ICore;
+class MimeType;
 }
 
 namespace PythonEditor {
-class PyTextEditorWidget;
 
-class Q_DECL_EXPORT PyTextEditorWidget : public TextEditor::BaseTextEditorWidget {
+class Q_DECL_EXPORT PyTextEditorWidget : public TextEditor::PlainTextEditorWidget
+{
     Q_OBJECT
 
 public:
     PyTextEditorWidget(QWidget *parent = 0);
     ~PyTextEditorWidget();
-
-    virtual void unCommentSelection();
 
     int editorRevision(void) const;
     bool isOutdated(void) const;
@@ -51,17 +53,16 @@ public:
     TextEditor::IAssistInterface *createAssistInterface(TextEditor::AssistKind assistKind,
                                                         TextEditor::AssistReason reason) const;
 
-public slots:
-    //virtual void setFontSettings(const TextEditor::FontSettings &);
-
 private slots:
     void updateDocument(void);
     void updateDocumentNow(void);
 
+signals:
+    void configured(Core::IEditor *editor);
+
 protected:
-    bool event(QEvent *e);
-    TextEditor::BaseTextEditor *createEditor(void);
     void createToolBar(Internal::PyEditorEditable *editable);
+    virtual TextEditor::BaseTextEditor *createEditor();
 
 private:
     void setSelectedElements(void);
