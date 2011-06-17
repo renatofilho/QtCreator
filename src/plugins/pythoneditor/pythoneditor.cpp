@@ -60,6 +60,7 @@
 #include "pythoneditoreditable.h"
 #include "pythoneditorplugin.h"
 #include "pythoneditorconstants.h"
+#include "pythonindenter.h"
 
 enum {
     UPDATE_DOCUMENT_DEFAULT_INTERVAL = 150,
@@ -68,13 +69,10 @@ enum {
 using namespace PythonEditor;
 using namespace PythonEditor::Internal;
 
-//using namespace TextEditor;
-
-PyTextEditorWidget::PyTextEditorWidget(QWidget *parent) 
+PyTextEditorWidget::PyTextEditorWidget(QWidget *parent)
     : TextEditor::PlainTextEditorWidget(parent),
     m_outlineCombo(0)
 {
-    /*
     qDebug() << "PyTextEditorWidget::PyTextEditorWidget";
     setParenthesesMatchingEnabled(true);
     setCodeFoldingSupported(true);
@@ -82,16 +80,19 @@ PyTextEditorWidget::PyTextEditorWidget(QWidget *parent)
     setMarksVisible(true);
     setRequestMarkEnabled(false);
     setLineSeparatorsAllowed(true);
-    setIndenter(new TextEditor::NormalIndenter); // Currently only "normal" indentation is supported.
 
     //setMimeType(QLatin1String(TextEditor::Constants::C_TEXTEDITOR_MIMETYPE_TEXT));
     //setDisplayName(tr(Core::Constants::K_DEFAULT_TEXT_EDITOR_DISPLAY_NAME));
-    */
+
+    setIndenter(new Indenter);
+
+    /*
     m_updateDocumentTimer = new QTimer(this);
     m_updateDocumentTimer->setInterval(UPDATE_DOCUMENT_DEFAULT_INTERVAL);
     m_updateDocumentTimer->setSingleShot(true);
     connect(m_updateDocumentTimer, SIGNAL(timeout()), this, SLOT(updateDocumentNow()));
     connect(this, SIGNAL(textChanged()), this, SLOT(updateDocument()));
+    */
     //connect(file(), SIGNAL(changed()), this, SLOT(configure()));
     //connect(Manager::instance(), SIGNAL(mimeTypesRegistered()), this, SLOT(configure()));
 
@@ -206,11 +207,6 @@ void PyTextEditorWidget::createToolBar(PyEditorEditable *editor)
     editor->insertExtraToolBarWidget(TextEditor::BaseTextEditor::Left,
                                         m_outlineCombo);
 }
-
-//void PyTextEditorWidget::updateDocumentNow(void)
-//{
-//    /* TODO */
-//}
 
 TextEditor::IAssistInterface *PyTextEditorWidget::createAssistInterface(
     TextEditor::AssistKind kind,

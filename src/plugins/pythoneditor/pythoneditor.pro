@@ -21,7 +21,8 @@ HEADERS += pythoneditor.h \
         pythoneditorfactory.h \
         pythoneditoractionhandler.h \
         pythonfilewizard.h \
-        pythonhoverhandler.h
+        pythonhoverhandler.h \
+        pythonindenter.h
 
 SOURCES += pythoneditor.cpp \
         pythoneditoreditable.cpp \
@@ -29,7 +30,8 @@ SOURCES += pythoneditor.cpp \
         pythoneditorfactory.cpp \
         pythoneditoractionhandler.cpp \
         pythonfilewizard.cpp \
-        pythonhoverhandler.cpp
+        pythonhoverhandler.cpp \
+        pythonindenter.cpp
 
 OTHER_FILES += PythonEditor.mimetypes.xml
 RESOURCES += pythoneditor.qrc
